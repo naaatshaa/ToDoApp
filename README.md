@@ -76,23 +76,17 @@ dotnet run
 
 ## Структура решения
 
-ToDoApp/
-├── Controllers/
-│   └── TasksController.cs
-├── Data/
-│   ├── AppDbContext.cs
-│   └── TaskRepository.cs
-├── Models/
-│   └── TaskItem.cs
-├── Services/
-│   └── TaskService.cs
-├── ToDoApp.Tests/
-│   ├── TaskRepositoryTests.cs
-│   └── ToDoApp.Tests.csproj
-├── Program.cs
-├── Dockerfile
-├── docker-compose.yml
-└── README.md
+- `ToDoApp/Controllers/TasksController.cs`
+- `ToDoApp/Data/AppDbContext.cs`
+- `ToDoApp/Data/TaskRepository.cs`
+- `ToDoApp/Models/TaskItem.cs`
+- `ToDoApp/Services/TaskService.cs`
+- `ToDoApp.Tests/TaskRepositoryTests.cs`
+- `ToDoApp.Tests/ToDoApp.Tests.csproj`
+- `Program.cs`
+- `Dockerfile`
+- `docker-compose.yml`
+- `README.md`
 
 ---
 
