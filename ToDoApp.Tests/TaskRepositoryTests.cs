@@ -18,16 +18,13 @@ public class TaskRepositoryTests
     [Fact]
     public async Task AddAsync_ShouldAddTask()
     {
-        // Arrange
         var context = GetDbContext();
         var repository = new TaskRepository(context);
         var task = new TaskItem { Title = "Тестовая задача" };
 
-        // Act
         await repository.AddAsync(task);
         var all = await repository.GetAllAsync();
-
-        // Assert
+        
         Assert.Single(all);
         Assert.Equal("Тестовая задача", all[0].Title);
     }
