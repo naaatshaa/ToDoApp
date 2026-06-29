@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Todo List — API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        input {
+            padding: 8px;
+            width: 70%;
+        }
+
+        button {
+            padding: 8px 16px;
+            cursor: pointer;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .completed {
+            text-decoration: line-through;
+            color: #999;
+        }
+
+        .actions button {
+            margin-left: 8px;
+            background: none;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 4px 10px;
+        }
+
+        .actions .delete {
+            color: red;
+            border-color: red;
+        }
+
+        .actions .toggle {
+            color: green;
+            border-color: green;
+        }
+    </style>
+</head>
+<body>
+    <h1>📋 Мои задачи</h1>
+
+    <div>
+        <input type="text" id="taskInput" placeholder="Название задачи..." />
+        <button onclick="addTask()">➕ Добавить</button>
+    </div>
+
+    <ul id="taskList"></ul>
+
+    <script>const API_URL = 'http://localhost:5000/api/Tasks';
+
+        async function loadTasks() {
+            const res = await fetch(API_URL);
+            const tasks = await res.json();
+            const list = document.getElementById('taskList');
+
+            if (tasks.length === 0) {
+                list.innerHTML = '<li>✨ Задач пока нет</li>';
+                return;
+            }
+
+            list.innerHTML = tasks.map(task => `
+                <li>
+                    <span class="${task.isCompleted ? 'completed' : ''}">
+                        ${task.title}
+                    </span>
+                    <div class="actions">
+                        <button class="toggle" onclick="toggleTask(${task.id})">
+                            ${task.isCompleted ? '↩️ Вернуть' : '✅ Выполнить'}
+                        </button>
+                        <button class="delete" onclick="deleteTask(${task.id})">🗑️</button>
+                    </div>
+                </li>
+            `).join('');
+        }
+
+        async function addTask() {
+            const input = document.getElementById('taskInput');
+            const title = input.value.trim();
+            if (!title) return alert('Введите название задачи');
+
+            await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title, isCompleted: false })
+            });
+
+            input.value = '';
+            loadTasks();
+        }
+
+        async function toggleTask(id) {
+            const res = await fetch(`${API_URL}/${id}`);
+            const task = await res.json();
+
+            task.isCompleted = !task.isCompleted;
+
+            await fetch(`${API_URL}/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(task)
+            });
+
+            loadTasks();
+        }
+
+        async function deleteTask(id) {
+            if (!confirm('Удалить задачу?')) return;
+            await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+            loadTasks();
+        }
+
+        loadTasks();</script>
+</body>
+</html>
